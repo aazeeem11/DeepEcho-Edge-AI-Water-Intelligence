@@ -2,6 +2,10 @@
 
 DeepEcho is a Streamlit dashboard for pond monitoring with simulated sensor signals, 3D sludge/bathymetry visualization, GPS-referenced overlays, and risk alerting.
 
+## Live App
+
+Streamlit deployment: https://deepecho-edge-ai-water-intelligence-11.streamlit.app/
+
 ## Overview
 
 This project demonstrates an edge-friendly water intelligence workflow:

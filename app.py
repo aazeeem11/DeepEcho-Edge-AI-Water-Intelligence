@@ -25,7 +25,7 @@ auto_refresh = st.sidebar.checkbox("Auto Refresh", True)
 
 # GPS Configuration
 st.sidebar.markdown("---")
-st.sidebar.subheader("ðŸ“ GPS Location")
+st.sidebar.subheader("GPS Location")
 gps_lat = st.sidebar.number_input("Latitude", value=16.5062, format="%.6f")
 gps_lon = st.sidebar.number_input("Longitude", value=80.6480, format="%.6f")
 st.sidebar.caption(f"Center: {gps_lat:.6f}Â°N, {gps_lon:.6f}Â°E")

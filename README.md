@@ -1,32 +1,41 @@
-# DeepEcho Edge-AI Water Intelligence
+﻿# DeepEcho Edge-AI Water Intelligence
 
-DeepEcho is a Streamlit dashboard for pond monitoring with simulated sensor signals, 3D sludge/bathymetry visualization, GPS-referenced overlays, and risk alerting.
+DeepEcho is a Streamlit dashboard for pond health monitoring with simulated telemetry, 3D sludge visualization, GPS-referenced mapping, risk scoring, historical logging, and report export.
 
-## Live App
+## What The App Does
 
-Streamlit deployment: https://deepecho-edge-ai-water-intelligence-11.streamlit.app/
+- Simulates pond bathymetry, sludge accumulation, and environmental readings
+- Calculates hypoxia risk and alert state (`NORMAL`, `WARNING`, `CRITICAL`)
+- Visualizes pond state in:
+1. 3D bathymetry/sludge map
+2. Optional GPS-referenced 2D contour map
+3. Gauges, radar, and trend charts
+- Detects sludge hotspots and tags them with GPS coordinates
+- Stores measurements in local SQLite (`deepecho.db`)
+- Exports:
+1. PDF report (`reportlab`)
+2. CSV history
 
-## Overview
+## Dashboard Sections
 
-This project demonstrates an edge-friendly water intelligence workflow:
-
-- Simulates pond environment and sludge distribution
-- Visualizes pond condition in interactive 3D and 2D maps
-- Computes hypoxia risk and ammonia-driven alerts
-- Stores historical snapshots in local SQLite
-- Supports data export and auto-refresh monitoring
-
-## Key Features
-
-- Live dashboard modes: `Monitoring`, `Survey`, `Calibration`
-- 3D pond view with selectable visualization:
-- `Sludge Depth`
-- `Bottom Terrain`
-- `Combined`
-- GPS center controls and optional survey path overlays
-- Hotspot detection for high sludge regions
-- Time-series ammonia chart and historical trend logging
-- System health indicators (CPU, memory, battery, signal quality)
+- Sidebar controls
+1. Operation mode (`Monitoring`, `Survey`, `Calibration`)
+2. Auto refresh toggle (2s)
+3. GPS center inputs
+4. Display toggles for survey path and GPS map
+- KPI cards: temperature, hypoxia, ammonia, sludge stats
+- Main visual row:
+1. 3D pond view (`Sludge Depth`, `Bottom Terrain`, `Combined`)
+2. Risk and ammonia gauges
+- Secondary row:
+1. Water quality radar
+2. System health bars
+- Tabs:
+1. Ammonia forecast
+2. Historical trends
+3. Raw history table
+- AI treatment action plan
+- Export buttons (PDF and CSV)
 
 ## Tech Stack
 
@@ -37,32 +46,38 @@ This project demonstrates an edge-friendly water intelligence workflow:
 - Pandas
 - SciPy
 - SQLite
+- ReportLab
 
-## Project Structure
+## Repository Structure
 
 ```text
-.
-├── app.py                # Streamlit entrypoint
-├── config.py             # Thresholds and pond/GPS constants
-├── data_simulator.py     # Surface/env/GPS/path/hotspot simulation
-├── risk_engine.py        # Hypoxia score and alert logic
-├── database.py           # SQLite init/insert/load helpers
-├── system_monitor.py     # Simulated system health metrics
-├── requirements.txt
-├── design.md             # Architecture and design notes
-└── GPS_INTEGRATION.md    # GPS-specific implementation notes
+app.py                     Streamlit app entrypoint and UI
+config.py                  Global config, thresholds, GPS defaults
+data_simulator.py          Pond/sludge/environment/GPS simulation
+risk_engine.py             Hypoxia risk + alert logic
+database.py                SQLite init/insert/load helpers
+system_monitor.py          Simulated device health metrics
+requirements.txt           Python dependencies
+README.md                  Project documentation
+design.md                  Architecture/design notes
+GPS_INTEGRATION.md         GPS implementation details
+Untitled40 (1).ipynb       Notebook/prototype notes
+deepecho.db                Local SQLite database (runtime data)
+*.h5 / *_quant.tflite      Model artifacts currently stored in repo
+DeepEcho_Presentation.pptx Presentation asset
+incubation_Report (1).pdf  Document asset
 ```
 
 ## Local Setup
 
-### 1. Clone
+1. Clone the repository:
 
 ```bash
 git clone https://github.com/aazeeem11/DeepEcho-Edge-AI-Water-Intelligence.git
 cd DeepEcho-Edge-AI-Water-Intelligence
 ```
 
-### 2. Create and activate virtual environment
+2. Create and activate a virtual environment:
 
 Windows (PowerShell):
 
@@ -78,48 +93,58 @@ python -m venv .venv
 source .venv/bin/activate
 ```
 
-### 3. Install dependencies
+3. Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Run the app
+4. Run:
 
 ```bash
 streamlit run app.py
 ```
 
-## Deploy to Streamlit Community Cloud
+Default local URL is typically `http://localhost:8501`.
 
-1. Push this repository to GitHub.
-2. Go to https://share.streamlit.io and sign in with GitHub.
-3. Click **Create app**.
-4. Select:
-- Repository: `aazeeem11/DeepEcho-Edge-AI-Water-Intelligence`
-- Branch: `main`
-- Main file path: `app.py`
-5. Click **Deploy**.
+## Configuration
 
-## Data Persistence Notes
+Update `config.py` for thresholds and pond/GPS defaults:
 
-- App data is stored in local SQLite file `deepecho.db`.
-- On managed cloud platforms, local file persistence may reset on restart/redeploy.
-- For production persistence, use a managed external database.
+- Pond size/grid and sludge cap
+- Hypoxia and ammonia warning/critical thresholds
+- GPS center and pond dimensions in meters
+
+## Data And Persistence
+
+- Runtime inserts one measurement per app rerun into SQLite table `measurements`
+- Database file: `deepecho.db` in project root
+- On ephemeral hosting, local DB may reset on restart/redeploy
+
+## Exports
+
+- PDF report includes:
+1. Snapshot metrics
+2. Sludge analysis
+3. Treatment plan
+4. Recent history
+- CSV export contains all stored measurement rows
+
+## Troubleshooting
+
+- `ModuleNotFoundError: No module named 'reportlab'`
+1. Run `pip install -r requirements.txt`
+- Port already in use (`8501`)
+1. Stop old Streamlit process, or run `streamlit run app.py --server.port 8502`
+- Empty/short history
+1. Let app run with auto-refresh enabled to accumulate rows
 
 ## Current Limitations
 
-- Uses simulated (not live hardware) sensor/GPS feeds
-- No authentication or multi-user controls
-- SQLite is local-only by default
-
-## Future Improvements
-
-- Integrate real sensor and telemetry ingestion
-- Add anomaly detection and forecasting models
-- Add user roles and secure remote operations
-- Migrate to cloud storage/warehouse for long-term analytics
+- Inputs are simulated, not live hardware telemetry
+- No authentication or role-based access
+- Local SQLite only (no managed production backend)
 
 ## License
 
-This project currently has no explicit license file. Add a `LICENSE` if you want to define usage permissions.
+No license file is currently included. Add a `LICENSE` file to define usage terms.
